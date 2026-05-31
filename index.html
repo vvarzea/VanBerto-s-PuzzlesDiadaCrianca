@@ -46,11 +46,11 @@ body{
   background:linear-gradient(145deg,#2a0a4e 0%,#1a0835 60%,#0f0525 100%);
   border-radius:16px;
   box-shadow:0 0 0 3px var(--orange),0 0 0 5px var(--gold),8px 8px 0 var(--dark),0 0 50px rgba(255,107,53,.22),inset 0 1px 0 rgba(255,200,100,.1);
-  padding:clamp(14px,3.5vw,32px) clamp(14px,3.5vw,36px);
+  padding:clamp(10px,2.5vh,28px) clamp(14px,3.5vw,36px);
   text-align:center;width:min(480px,96%);
   animation:cardPop .3s cubic-bezier(.34,1.56,.64,1) both;
   overflow-y:auto;
-  max-height:min(92vh, 700px);
+  max-height:94vh;
   -webkit-overflow-scrolling:touch;
 }
 .mcard::before{content:'🌟';position:absolute;top:8px;left:10px;font-size:18px;opacity:.65;pointer-events:none;}
@@ -58,13 +58,13 @@ body{
 @keyframes cardPop{from{opacity:0;transform:scale(.88) rotate(-1.5deg);}to{opacity:1;transform:scale(1) rotate(0);}}
 .mcard h2{
   font-family:'Fredoka One',cursive;
-  color:var(--gold);font-size:clamp(20px,5.5vw,30px);
-  margin-bottom:8px;
+  color:var(--gold);font-size:clamp(20px,5.5vw,28px);
+  margin-bottom:4px;
   text-shadow:0 2px 10px rgba(255,107,53,.45);
   border-bottom:2px solid rgba(255,107,53,.4);
-  padding-bottom:8px;
+  padding-bottom:6px;
 }
-.mcard p{color:#ffb8a0;font-size:clamp(12px,3vw,14px);line-height:1.75;margin-bottom:14px;font-weight:700;}
+.mcard p{color:#ffb8a0;font-size:clamp(12px,3vw,14px);line-height:1.6;margin-bottom:10px;font-weight:700;}
 
 /* Buttons */
 .bplay{
@@ -74,7 +74,7 @@ body{
   padding:clamp(9px,2vw,13px) clamp(28px,6vw,44px);border-radius:10px;cursor:pointer;
   box-shadow:4px 4px 0 var(--dark),inset 0 1px 0 rgba(255,220,100,.2);
   text-shadow:0 1px 3px rgba(0,0,0,.35);
-  margin-top:14px;transition:transform .08s,box-shadow .08s;touch-action:manipulation;
+  margin-top:10px;transition:transform .08s,box-shadow .08s;touch-action:manipulation;
   display:inline-flex;align-items:center;gap:8px;
 }
 .bplay:hover{background:linear-gradient(180deg,#ff8050,#e85020);transform:translate(-1px,-1px);box-shadow:5px 5px 0 var(--dark);}
@@ -106,14 +106,14 @@ body{
 .credit{color:rgba(255,184,160,.35);font-size:10px;margin-top:16px;font-family:'Fredoka One',cursive;}
 
 /* End stats */
-.mscore{font-family:'Fredoka One',cursive;font-size:clamp(36px,10vw,56px);color:var(--gold);text-shadow:0 0 24px rgba(255,215,0,.5);line-height:1;}
-#endStats{display:flex;justify-content:center;gap:clamp(10px,3vw,22px);margin:12px 0 8px;flex-wrap:wrap;}
-.endStat{background:rgba(255,107,53,.14);border:1px solid rgba(255,215,0,.18);border-radius:8px;padding:8px 18px;}
-.endStat .es-val{font-family:'Fredoka One',cursive;font-size:clamp(18px,4.5vw,26px);color:var(--gold);text-shadow:0 0 10px rgba(255,215,0,.4);}
+.mscore{font-family:'Fredoka One',cursive;font-size:clamp(30px,7vw,48px);color:var(--gold);text-shadow:0 0 24px rgba(255,215,0,.5);line-height:1;margin:4px 0;}
+#endStats{display:flex;justify-content:center;gap:clamp(8px,2vw,22px);margin:8px 0 6px;flex-wrap:wrap;}
+.endStat{background:rgba(255,107,53,.14);border:1px solid rgba(255,215,0,.18);border-radius:8px;padding:6px 16px;}
+.endStat .es-val{font-family:'Fredoka One',cursive;font-size:clamp(16px,3.5vw,24px);color:var(--gold);text-shadow:0 0 10px rgba(255,215,0,.4);}
 .endStat .es-lbl{font-family:'Fredoka One',cursive;font-size:clamp(9px,2vw,11px);color:rgba(255,184,160,.5);text-transform:uppercase;letter-spacing:.8px;}
 
 /* Stars rating */
-.star-rating{display:flex;justify-content:center;gap:6px;margin:6px 0 10px;font-size:clamp(26px,7vw,38px);}
+.star-rating{display:flex;justify-content:center;gap:6px;margin:4px 0 6px;font-size:clamp(24px,6vw,34px);}
 .star-rating span{animation:starPop .4s cubic-bezier(.34,1.8,.64,1) both;}
 .star-rating span:nth-child(2){animation-delay:.12s;}
 .star-rating span:nth-child(3){animation-delay:.24s;}
@@ -470,11 +470,62 @@ body{
 #pp-bar{height:100%;background:linear-gradient(90deg,var(--orange),var(--gold));border-radius:999px;transition:width .5s cubic-bezier(.34,1.56,.64,1);width:0%;}
 #pp-label{font-family:'Fredoka One',cursive;font-size:clamp(11px,2.5vw,13px);color:rgba(255,184,160,.6);white-space:nowrap;}
 
-/* ── TIP CARD ── */
+/* ── NAME INPUT ── */
+.name-wrap{
+  margin:10px 0 14px;
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+}
+.name-label{
+  font-family:'Fredoka One',cursive;
+  font-size:clamp(12px,3vw,14px);
+  color:rgba(255,184,160,.8);
+  letter-spacing:.5px;
+}
+#playerNameInput{
+  font-family:'Baloo 2',sans-serif;font-weight:800;
+  font-size:clamp(14px,3.5vw,17px);
+  background:rgba(255,107,53,.08);
+  border:2.5px solid rgba(255,107,53,.5);
+  border-radius:10px;
+  color:#fff8e0;
+  padding:9px 16px;
+  text-align:center;
+  width:min(260px,80%);
+  outline:none;
+  transition:border-color .2s, box-shadow .2s;
+  box-shadow:3px 3px 0 var(--dark);
+  caret-color:var(--gold);
+}
+#playerNameInput::placeholder{color:rgba(255,184,160,.35);font-weight:700;}
+#playerNameInput:focus{
+  border-color:var(--gold);
+  box-shadow:3px 3px 0 var(--dark), 0 0 14px rgba(255,215,0,.25);
+}
+
+/* Name badge in HUD */
+#hudName{
+  font-family:'Fredoka One',cursive;
+  color:var(--gold);
+  font-size:clamp(11px,1.8vw,14px);
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  max-width:120px;
+}
+
+/* End modal player name greeting */
+#endPlayerName{
+  font-family:'Fredoka One',cursive;
+  font-size:clamp(16px,4.5vw,22px);
+  color:#fff8e0;
+  text-shadow:0 0 16px rgba(255,107,53,.5);
+  margin:2px 0 6px;
+  letter-spacing:.5px;
+}
 #tipCard{
   background:rgba(255,107,53,.09);
   border:1.5px solid rgba(255,215,0,.22);border-radius:10px;
-  padding:12px 16px;margin:10px 0 6px;text-align:left;
+  padding:8px 14px;margin:6px 0 4px;text-align:left;
   animation:tipIn .5s cubic-bezier(.34,1.2,.64,1) both;
 }
 @keyframes tipIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
@@ -516,6 +567,11 @@ body{
         </svg>
       </div>
       <div class="vb-bubble">Olá! Sou o VanBerto!<br>Vamos montar o puzzle do<br><b>Dia das Crianças! 🎉</b></div>
+    </div>
+
+    <div class="name-wrap">
+      <label class="name-label" for="playerNameInput">✏️ Qual é o teu nome?</label>
+      <input id="playerNameInput" type="text" maxlength="20" placeholder="Escreve aqui..." autocomplete="off" spellcheck="false">
     </div>
 
     <p>Arrasta as peças para o lugar certo e reconstrói a imagem.<br>Usa a dica se precisares! 🧩</p>
@@ -561,6 +617,7 @@ body{
     </div>
 
     <h2 id="endTitle">Parabéns!</h2>
+    <div id="endPlayerName"></div>
 
     <!-- Stars rating -->
     <div class="star-rating" id="starRating">
@@ -590,23 +647,24 @@ body{
 
     <!-- Completed image showcase -->
     <div id="endThumb" style="position:relative;margin:10px 0 6px;">
-      <div style="position:relative;border-radius:12px;overflow:hidden;box-shadow:0 0 0 3px #ff6b35,0 0 0 5px #ffd700,6px 6px 0 #0a0520;animation:thumbGlow 2s ease-in-out infinite alternate;max-height:min(38vh,220px);overflow:hidden;">
-        <img id="endThumbImg" style="width:100%;display:block;border-radius:10px;max-height:min(38vh,220px);object-fit:cover;" alt="Imagem completa">
+      <div style="position:relative;border-radius:12px;overflow:hidden;box-shadow:0 0 0 3px #ff6b35,0 0 0 5px #ffd700,6px 6px 0 #0a0520;animation:thumbGlow 2s ease-in-out infinite alternate;">
+        <img id="endThumbImg" style="width:100%;display:block;border-radius:10px;" alt="Imagem completa">
         <div style="position:absolute;inset:0;background:linear-gradient(180deg,transparent 55%,rgba(10,5,32,.7) 100%);border-radius:10px;pointer-events:none;"></div>
         <div style="position:absolute;bottom:10px;left:50%;transform:translateX(-50%);font-family:'Baloo 2',sans-serif;font-weight:900;font-size:clamp(11px,2.8vw,14px);color:#fff8e0;background:#ff6b35;padding:4px 16px;border-radius:8px;white-space:nowrap;box-shadow:3px 3px 0 #0a0520;border:1.5px solid #ffd700;">✅ Puzzle completo!</div>
       </div>
     </div>
 
-    <button class="bplay" onclick="startGame()">🔄 Jogar outra vez</button>
-    <br><button class="bsec" onclick="showStart()">🏠 Início</button>
-    <p class="credit">Professora: Vanda Várzea</p>
+    <button class="bplay" onclick="startGame()" style="margin-top:8px;">🔄 Jogar outra vez</button>
+    <br><button class="bsec" onclick="showStart()" style="margin-top:6px;">🏠 Início</button>
+    <p class="credit" style="margin-top:8px;">Professora: Vanda Várzea</p>
   </div>
 </div>
 
 <!-- ══ GAME ══ -->
 <div id="gameArea" style="display:none;">
   <div id="hud" style="width:100%;max-width:980px;">
-    <div style="display:flex;gap:7px;flex-wrap:wrap;">
+    <div style="display:flex;gap:7px;flex-wrap:wrap;align-items:center;">
+      <div class="hud-stat">👤 <span id="hudName">—</span></div>
       <div class="hud-stat">🎯 <b id="moves">0</b> mov</div>
       <div class="hud-stat">🧩 <b id="correct">0</b>/<b id="total">0</b></div>
       <div class="hud-stat">⏱ <b id="timerEl">0s</b></div>
@@ -712,9 +770,24 @@ const IMG_SRC = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BS
 
 let cols, rows, pieces=[], moves, seconds, timerInt, diff='easy', refVisible=true;
 let gameWon = false;
+let playerName = '';
 
 const arena   = document.getElementById('arena');
 const wrap    = document.getElementById('arena-wrap');
+
+// ── PLAYER NAME INPUT ──
+document.getElementById('playerNameInput').addEventListener('keydown', e=>{
+  if(e.key === 'Enter') startGame();
+});
+document.getElementById('playerNameInput').addEventListener('input', e=>{
+  const name = e.target.value.trim();
+  const bubble = document.querySelector('#startMod .vb-bubble');
+  if(name){
+    bubble.innerHTML = 'Olá, <b>' + name.charAt(0).toUpperCase() + name.slice(1) + '</b>!<br>Vamos montar o puzzle do<br><b>Dia das Crianças! 🎉</b>';
+  } else {
+    bubble.innerHTML = 'Olá! Sou o VanBerto!<br>Vamos montar o puzzle do<br><b>Dia das Crianças! 🎉</b>';
+  }
+});
 
 // ── INTERNET SAFETY TIPS ──
 const TIPS = [
@@ -894,6 +967,13 @@ function preloadImg(cb){
 
 // ── COUNTDOWN THEN START ──
 function startGame(){
+  // Read and save player name
+  const nameInput = document.getElementById('playerNameInput');
+  playerName = (nameInput.value || '').trim();
+  // Update HUD name
+  const hudName = document.getElementById('hudName');
+  hudName.textContent = playerName || '—';
+
   document.getElementById('startMod').style.display='none';
   document.getElementById('endMod').style.display='none';
   document.getElementById('gameArea').style.display='flex';
@@ -981,7 +1061,12 @@ function initGame(){
   },1000);
 
   const startMsgs = diff==='expert'?VB_START_EXPERT:diff==='vhard'?VB_START_HARD:VB_START;
-  vbRnd(startMsgs);
+  // Personalise first message with name if available
+  if(playerName){
+    vbSay(playerName + ', vamos lá! 💪🧩');
+  } else {
+    vbRnd(startMsgs);
+  }
 
   const{w,h}=getSize();
   const pw=w/cols,ph=h/rows;
@@ -1000,15 +1085,28 @@ function initGame(){
   while(attempts<10&&pos.some((p,i)=>p.c===Math.floor(i%cols)&&p.r===Math.floor(i/cols)));
 
   // Use cached image (already loaded before countdown)
+  const dpr = window.devicePixelRatio || 1;
+  // Helper: draw one piece onto a canvas at the correct DPR resolution
+  function renderPieceCanvas(cv, img, c, r, pw2, ph2){
+    cv.width  = Math.ceil(pw2 * dpr);
+    cv.height = Math.ceil(ph2 * dpr);
+    cv.style.width  = pw2 + 'px';
+    cv.style.height = ph2 + 'px';
+    const ctx = cv.getContext('2d');
+    ctx.scale(dpr, dpr);
+    ctx.drawImage(img,
+      c / cols * img.width,  r / rows * img.height,
+      img.width / cols,      img.height / rows,
+      0, 0, pw2, ph2);
+  }
+
   const _doRender=(img)=>{
     for(let r=0;r<rows;r++){
       for(let c=0;c<cols;c++){
         const cv=document.createElement('canvas');
         const pw2=Math.ceil(pw),ph2=Math.ceil(ph);
-        cv.width=pw2;cv.height=ph2;
-        cv.style.width=pw2+'px';cv.style.height=ph2+'px';
+        renderPieceCanvas(cv, img, c, r, pw2, ph2);
         cv.className='piece';
-        cv.getContext('2d').drawImage(img,c/cols*img.width,r/rows*img.height,img.width/cols,img.height/rows,0,0,pw2,ph2);
         const pl=pos[r*cols+c];
         cv.style.left=(pl.c*pw)+'px';cv.style.top=(pl.r*ph)+'px';
         cv.dataset.tc=c;cv.dataset.tr=r;cv.dataset.cc=pl.c;cv.dataset.cr=pl.r;
@@ -1155,9 +1253,20 @@ function showEndModal(){
   document.getElementById('esTime').textContent=m;
   document.getElementById('esMoves').textContent=moves;
 
+  // Player name greeting
+  const nameEl = document.getElementById('endPlayerName');
+  if(playerName){
+    nameEl.textContent = '🎉 ' + playerName + ', conseguiste!';
+    nameEl.style.display = 'block';
+  } else {
+    nameEl.style.display = 'none';
+  }
+
   const geniusPrefix = (diff==='expert'&&isGenius)?'Lendário! Expert de verdade! 🏆':(diff==='expert'&&isGood)?'Incrível! Quase perfeito! 🔥':(diff==='vhard'&&isGenius)?'Espetacular! Nível master! 🔥':(diff==='vhard'&&isGood)?'Muito bem no nível difícil! 💪':isGenius?'Incrível, és um génio do puzzle! 🌟':isGood?'Muito bem! Conseguiste! 🎉':'Parabéns, não desististe! 💪';
   document.getElementById('endTxt').textContent=geniusPrefix;
-  const endVbMsg = (diff==='expert'&&isGenius)?'És absolutamente incrível! 👑🏆':(diff==='expert')?'Conseguiste o modo Expert! 🔥':(diff==='vhard'&&isGenius)?'Estou sem palavras! Fantástico! 🔥':(diff==='vhard')?'Que desafio enorme! Parabéns! 💪':isGenius?'Que incrível! És o melhor! 🏆':'Parabéns! Estou orgulhoso! 🎉';
+  const endVbMsg = playerName
+    ? (isGenius ? playerName+', és absolutamente incrível! 👑🏆' : playerName+', estou muito orgulhoso! 🎉')
+    : ((diff==='expert'&&isGenius)?'És absolutamente incrível! 👑🏆':(diff==='expert')?'Conseguiste o modo Expert! 🔥':(diff==='vhard'&&isGenius)?'Estou sem palavras! Fantástico! 🔥':(diff==='vhard')?'Que desafio enorme! Parabéns! 💪':isGenius?'Que incrível! És o melhor! 🏆':'Parabéns! Estou orgulhoso! 🎉');
   document.getElementById('endVbMsg').textContent=endVbMsg;
   const endTitle = (diff==='expert'&&isGenius)?'Lendário! 👑':(diff==='expert')?'Expert! 🔥':(diff==='vhard'&&isGenius)?'Master! 🔥':(diff==='vhard')?'Muito bem! 💪':isGenius?'Incrível!':isGood?'Muito bem!':'Parabéns!';
   document.getElementById('endTitle').textContent=endTitle;
@@ -1257,12 +1366,16 @@ function _onResize(){
     p.style.width=pw2+'px';p.style.height=ph2+'px';
     // Re-render piece from cached image on orientation change
     if(orientChanged && _imgCache){
-      const ctx=p.getContext('2d');
+      const dpr2 = window.devicePixelRatio || 1;
       const tc=parseInt(p.dataset.tc), tr_=parseInt(p.dataset.tr);
-      ctx.clearRect(0,0,pw2,ph2);
-      p.width=pw2; p.height=ph2;
-      ctx.drawImage(_imgCache, tc/cols*_imgCache.width, tr_/rows*_imgCache.height,
-        _imgCache.width/cols, _imgCache.height/rows, 0, 0, pw2, ph2);
+      p.width  = Math.ceil(pw2 * dpr2);
+      p.height = Math.ceil(ph2 * dpr2);
+      const ctx = p.getContext('2d');
+      ctx.scale(dpr2, dpr2);
+      ctx.drawImage(_imgCache,
+        tc / cols * _imgCache.width,  tr_ / rows * _imgCache.height,
+        _imgCache.width / cols,       _imgCache.height / rows,
+        0, 0, pw2, ph2);
     }
   });
 }
