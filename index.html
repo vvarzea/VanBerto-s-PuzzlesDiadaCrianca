@@ -103,13 +103,21 @@ body{
 .dbtn.on{border-color:var(--orange);color:#fff8e0;background:rgba(255,107,53,.18);box-shadow:0 0 12px rgba(255,107,53,.4);}
 .dbtn:hover:not(.on){border-color:rgba(255,107,53,.4);color:#ffb8a0;}
 
-.credit{color:rgba(255,184,160,.35);font-size:10px;margin-top:16px;font-family:'Fredoka One',cursive;}
+.credit{
+  font-family:'Fredoka One',cursive;
+  font-size:clamp(11px,2.5vw,13px);
+  color:#ffb890;
+  font-weight:400;
+  margin-top:10px;
+  letter-spacing:.5px;
+  opacity:.9;
+}
 
 /* End stats */
-.mscore{font-family:'Fredoka One',cursive;font-size:clamp(30px,7vw,48px);color:var(--gold);text-shadow:0 0 24px rgba(255,215,0,.5);line-height:1;margin:4px 0;}
-#endStats{display:flex;justify-content:center;gap:clamp(8px,2vw,22px);margin:8px 0 6px;flex-wrap:wrap;}
-.endStat{background:rgba(255,107,53,.14);border:1px solid rgba(255,215,0,.18);border-radius:8px;padding:6px 16px;}
-.endStat .es-val{font-family:'Fredoka One',cursive;font-size:clamp(16px,3.5vw,24px);color:var(--gold);text-shadow:0 0 10px rgba(255,215,0,.4);}
+.mscore{font-family:'Fredoka One',cursive;font-size:clamp(22px,5vw,34px);color:var(--gold);text-shadow:0 0 24px rgba(255,215,0,.5);line-height:1;margin:4px 0;}
+#endStats{display:flex;justify-content:center;gap:clamp(8px,2vw,22px);margin:6px 0 4px;flex-wrap:wrap;}
+.endStat{background:rgba(255,107,53,.14);border:1px solid rgba(255,215,0,.18);border-radius:8px;padding:4px 12px;}
+.endStat .es-val{font-family:'Fredoka One',cursive;font-size:clamp(13px,3vw,18px);color:var(--gold);text-shadow:0 0 10px rgba(255,215,0,.4);}
 .endStat .es-lbl{font-family:'Fredoka One',cursive;font-size:clamp(9px,2vw,11px);color:rgba(255,184,160,.5);text-transform:uppercase;letter-spacing:.8px;}
 
 /* Stars rating */
@@ -119,7 +127,7 @@ body{
 .star-rating span:nth-child(3){animation-delay:.24s;}
 @keyframes starPop{from{transform:scale(0) rotate(-30deg);opacity:0;}to{transform:none;opacity:1;}}
 
-/* VanBerto bubble (modal) */
+/* VanBerto bubble (modal) — seta aponta para a esquerda (robot está à esquerda) */
 .vb-bubble{
   background:linear-gradient(135deg,#dcebff,#fff);
   border:3px solid #0f172a;outline:2px solid #1e293b;outline-offset:-4px;
@@ -133,8 +141,100 @@ body{
 .vb-bubble::after{content:"";position:absolute;left:-16px;top:50%;transform:translateY(-50%);border-top:10px solid transparent;border-bottom:10px solid transparent;border-right:16px solid #0f172a;}
 .vb-bubble::before{content:"";position:absolute;left:-11px;top:50%;transform:translateY(-50%);border-top:8px solid transparent;border-bottom:8px solid transparent;border-right:12px solid #dcebff;z-index:1;}
 
+/* Bubble acima do robot — seta aponta para baixo */
+#vbMsgFloat{
+  position:relative;
+  margin-bottom:0;
+}
+#vbMsgFloat::after{
+  content:"";position:absolute;
+  bottom:-14px;left:50%;transform:translateX(-50%);
+  border-left:10px solid transparent;border-right:10px solid transparent;
+  border-top:14px solid rgba(255,107,53,.4);
+}
+#vbMsgFloat::before{
+  content:"";position:absolute;
+  bottom:-10px;left:50%;transform:translateX(-50%);
+  border-left:8px solid transparent;border-right:8px solid transparent;
+  border-top:12px solid #2a0a4e;
+  z-index:1;
+}
+
 @keyframes vbf{0%,100%{transform:translateY(0);}50%{transform:translateY(-7px);}}
-#prof-tag{position:fixed;bottom:.6rem;right:.75rem;z-index:600;font-family:'Nunito',sans-serif;font-size:clamp(.65rem,1.8vw,.78rem);color:#ffb890;font-weight:800;white-space:nowrap;text-shadow:0 1px 6px rgba(0,0,0,.8);pointer-events:none;}
+/* Prof tag oculto */
+#prof-tag{ display:none; }
+#prof-robot{ display:none; }
+#vb-float-prof-center{ display:none !important; }
+
+/* NOME DA PROFESSORA — centrado em baixo */
+#vb-float-prof-center{
+  position:fixed;
+  bottom:.55rem;left:50%;transform:translateX(-50%);
+  z-index:700;
+  display:none; /* mostrado só durante o jogo */
+  font-family:'Nunito',sans-serif;
+  font-size:clamp(.65rem,1.8vw,.85rem);
+  color:#ffb890;font-weight:800;
+  text-shadow:0 1px 6px rgba(0,0,0,.8);
+  white-space:nowrap;
+  background:linear-gradient(180deg,rgba(42,10,78,.85),rgba(26,8,53,.85));
+  border:1.5px solid rgba(255,107,53,.35);
+  border-radius:20px;
+  padding:4px 16px;
+  pointer-events:none;
+}
+
+/* VB-BAR FLUTUANTE — robot à direita, sempre visível */
+#vb-float{
+  position:fixed;
+  bottom:.7rem;right:.75rem;
+  z-index:1050;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:4px;
+  pointer-events:none;
+}
+#vb-float-row{
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+}
+#vbBotFloat{
+  width:clamp(42px,5.5vw,66px);
+  flex-shrink:0;
+  animation:vbf 3s ease-in-out infinite;
+  filter:drop-shadow(0 3px 12px rgba(255,107,53,.5));
+}
+#vbMsgFloat{
+  font-family:'Fredoka One',cursive;
+  color:var(--gold);
+  font-size:clamp(11px,1.8vw,14px);
+  line-height:1.35;
+  background:linear-gradient(180deg,#2a0a4e,#1a0835);
+  border:2px solid rgba(255,107,53,.4);
+  box-shadow:3px 3px 0 var(--dark);
+  border-radius:10px;
+  padding:5px 10px;
+  max-width:clamp(140px,22vw,240px);
+  text-shadow:0 1px 4px rgba(0,0,0,.5);
+}
+@media(max-width:600px) and (orientation:portrait){
+  #vb-float{ bottom:.4rem; right:.4rem; }
+  #vbBotFloat{ width:34px; }
+  #vbMsgFloat{ font-size:10px;padding:4px 8px;max-width:130px; }
+  #vb-float-prof-center{ font-size:.6rem;padding:3px 12px; }
+}
+#btnFullscreen{
+  position:fixed;top:.55rem;right:.65rem;z-index:1100;
+  background:linear-gradient(180deg,#2a0a4e,#1a0835);
+  border:2px solid rgba(255,107,53,.4);
+  color:#ffb8a0;font-size:15px;
+  width:36px;height:36px;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;box-shadow:3px 3px 0 var(--dark);
+  transition:all .08s;
+}
+#btnFullscreen:hover{border-color:var(--orange);color:var(--gold);transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--dark);}
+#btnFullscreen:active{transform:translate(1px,1px);box-shadow:2px 2px 0 var(--dark);}
 @keyframes vbBlink{0%,90%,100%{transform:scaleY(0);}94%{transform:scaleY(1);}}
 @keyframes waveVB{0%{transform:rotate(0);}25%{transform:rotate(-18deg);}50%{transform:rotate(0);}75%{transform:rotate(-18deg);}100%{transform:rotate(0);}}
 
@@ -323,12 +423,26 @@ body{
   .vb-bar{padding:4px 6px;}
 }
 
+/* ── END MODAL — card mais compacto ── */
+#endMod .mcard{
+  width:min(480px,96%);
+}
+#endMod #endStats{
+  display:flex;gap:8px;margin:0;flex-shrink:0;align-items:center;
+}
+#endMod h2{font-size:clamp(17px,4.5vw,22px);}
+#endMod .star-rating{font-size:clamp(20px,5vw,28px);margin:2px 0 4px;}
+#endMod .mscore{font-size:clamp(20px,4.5vw,30px);}
+#endMod p#endTxt{font-size:12px;margin-top:4px;}
+#endMod #tipCard{padding:6px 10px;margin:4px 0;}
+#endMod #tipCard .tip-text{font-size:clamp(10px,2.5vw,12px);}
+
 /* ── END MODAL MOBILE ── */
 @media(max-width:540px){
   #endMod .mcard{
     padding:12px 12px 16px;
     max-height:96vh;
-    width:97%;
+    width:min(360px,94%);
   }
   #endMod .mcard h2{font-size:clamp(16px,5vw,22px);margin-bottom:4px;}
   #endMod .mcard > div:first-child{gap:8px;margin-bottom:6px;}
@@ -546,29 +660,6 @@ body{
     <div style="font-size:clamp(40px,10vw,56px);margin-bottom:4px;">🧩</div>
     <h2>Puzzle — Dia das Crianças 🎉</h2>
 
-    <div style="display:flex;align-items:center;justify-content:center;gap:12px;margin:14px 0;">
-      <div style="width:clamp(42px,10vw,58px);animation:vbf 3s ease-in-out infinite;flex-shrink:0;filter:drop-shadow(0 3px 12px rgba(0,229,255,.45));">
-        <svg viewBox="0 0 80 90" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <linearGradient id="vbgS" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#e0f7ff"/><stop offset="100%" stop-color="#b3e8fc"/></linearGradient>
-            <linearGradient id="vvgS" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#00e5ff"/><stop offset="100%" stop-color="#00b8d9"/></linearGradient>
-          </defs>
-          <circle cx="40" cy="42" r="34" fill="rgba(0,229,255,.10)"/>
-          <rect x="18" y="32" width="44" height="30" rx="13" fill="url(#vbgS)"/>
-          <circle cx="40" cy="48" r="7" fill="#78909c"/>
-          <rect x="22" y="10" width="36" height="26" rx="13" fill="url(#vbgS)"/>
-          <rect x="26" y="15" width="28" height="16" rx="8" fill="url(#vvgS)"/>
-          <rect x="26" y="15" width="28" height="16" rx="8" fill="#e0f7ff" opacity=".9" style="transform-origin:40px 23px;animation:vbBlink 5s ease-in-out infinite;"/>
-          <circle cx="33" cy="23" r="2.5" fill="#0f172a"/><circle cx="47" cy="23" r="2.5" fill="#0f172a"/>
-          <line x1="40" y1="10" x2="40" y2="4" stroke="#00e5ff" stroke-width="2"/><circle cx="40" cy="3" r="2.5" fill="#00e5ff"/>
-          <rect x="11" y="35" width="7" height="20" rx="3.5" fill="#cfd8dc"/>
-          <rect x="62" y="35" width="7" height="20" rx="3.5" fill="#cfd8dc" style="transform-origin:65.5px 35px;animation:waveVB 1.5s ease-in-out infinite;"/>
-          <rect x="22" y="60" width="12" height="8" rx="3" fill="#1f2937"/><rect x="46" y="60" width="12" height="8" rx="3" fill="#1f2937"/>
-        </svg>
-      </div>
-      <div class="vb-bubble">Olá! Sou o VanBerto!<br>Vamos montar o puzzle do<br><b>Dia das Crianças! 🎉</b></div>
-    </div>
-
     <div class="name-wrap">
       <label class="name-label" for="playerNameInput">✏️ Qual é o teu nome?</label>
       <input id="playerNameInput" type="text" maxlength="20" placeholder="Escreve aqui..." autocomplete="off" spellcheck="false">
@@ -585,7 +676,7 @@ body{
     </div>
 
     <button class="bplay" onclick="startGame()">🎮 Jogar!</button>
-    <p class="credit">Professora: Vanda Várzea</p>
+    <p class="credit">✦ Professora Vanda Várzea ✦</p>
   </div>
 </div>
 
@@ -593,29 +684,6 @@ body{
 <div class="movl" id="endMod" style="display:none;">
   <div class="mbg"></div>
   <div class="mcard">
-    <div style="display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:10px;">
-      <div style="width:clamp(42px,10vw,58px);flex-shrink:0;filter:drop-shadow(0 3px 12px rgba(0,229,255,.45));animation:vbf 3s ease-in-out infinite;">
-        <svg viewBox="0 0 80 90" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <linearGradient id="vbgE" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#e0f7ff"/><stop offset="100%" stop-color="#b3e8fc"/></linearGradient>
-            <linearGradient id="vvgE" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#00e5ff"/><stop offset="100%" stop-color="#00b8d9"/></linearGradient>
-          </defs>
-          <circle cx="40" cy="42" r="34" fill="rgba(0,229,255,.10)"/>
-          <rect x="18" y="32" width="44" height="30" rx="13" fill="url(#vbgE)"/>
-          <circle cx="40" cy="48" r="7" fill="#78909c"/>
-          <rect x="22" y="10" width="36" height="26" rx="13" fill="url(#vbgE)"/>
-          <rect x="26" y="15" width="28" height="16" rx="8" fill="url(#vvgE)"/>
-          <rect x="26" y="15" width="28" height="16" rx="8" fill="#e0f7ff" opacity=".9" style="transform-origin:40px 23px;animation:vbBlink 5s ease-in-out infinite;"/>
-          <circle cx="33" cy="23" r="2.5" fill="#0f172a"/><circle cx="47" cy="23" r="2.5" fill="#0f172a"/>
-          <line x1="40" y1="10" x2="40" y2="4" stroke="#00e5ff" stroke-width="2"/><circle cx="40" cy="3" r="2.5" fill="#00e5ff"/>
-          <rect x="11" y="35" width="7" height="20" rx="3.5" fill="#cfd8dc"/>
-          <rect x="62" y="35" width="7" height="20" rx="3.5" fill="#cfd8dc" style="transform-origin:65.5px 35px;animation:waveVB 1.5s ease-in-out infinite;"/>
-          <rect x="22" y="60" width="12" height="8" rx="3" fill="#1f2937"/><rect x="46" y="60" width="12" height="8" rx="3" fill="#1f2937"/>
-        </svg>
-      </div>
-      <div id="endVbMsg" class="vb-bubble">Fantástico! 🏆</div>
-    </div>
-
     <h2 id="endTitle">Parabéns!</h2>
     <div id="endPlayerName"></div>
 
@@ -641,7 +709,7 @@ body{
     <div id="recordBadge">🏅 Novo recorde pessoal!</div>
     <div id="bestScore"></div>
     <div id="tipCard">
-      <div class="tip-label">💡 Sabia que…</div>
+      <div class="tip-label">💡 Sabias que…</div>
       <div><span class="tip-icon"></span><span class="tip-text" id="tipText"></span></div>
     </div>
 
@@ -654,9 +722,11 @@ body{
       </div>
     </div>
 
-    <button class="bplay" onclick="startGame()" style="margin-top:8px;">🔄 Jogar outra vez</button>
-    <br><button class="bsec" onclick="showStart()" style="margin-top:6px;">🏠 Início</button>
-    <p class="credit" style="margin-top:8px;">Professora: Vanda Várzea</p>
+    <div style="display:flex;gap:8px;justify-content:center;align-items:center;margin-top:10px;flex-wrap:wrap;">
+      <button class="bplay" onclick="startGame()" style="margin-top:0;font-size:clamp(13px,3.5vw,16px);padding:8px 18px;">🔄 Jogar outra vez</button>
+      <button class="bsec" onclick="showStart()" style="margin-top:0;">🏠 Início</button>
+    </div>
+    <p class="credit" style="margin-top:10px;">✦ Professora Vanda Várzea ✦</p>
   </div>
 </div>
 
@@ -684,8 +754,8 @@ body{
     <div id="pp-piece-right" class="pp-piece">🏆</div>
   </div>
 
-  <!-- VanBerto bar -->
-  <div class="vb-bar" style="width:100%;max-width:980px;">
+  <!-- VanBerto bar (oculta — usada só para manter o vbMsgGame e vbBotGame no DOM) -->
+  <div class="vb-bar" style="width:100%;max-width:980px;display:none!important;">
     <svg id="vbBotGame" viewBox="0 0 80 90" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <linearGradient id="vbgG" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#e0f7ff"/><stop offset="100%" stop-color="#b3e8fc"/></linearGradient>
@@ -743,7 +813,38 @@ body{
   </div>
 </div>
 
-<div id="prof-tag">✦ Professora Vanda Várzea ✦</div>
+<!-- Nome da professora centrado no topo -->
+<div id="vb-float-prof-center">✦ Professora Vanda Várzea ✦</div>
+
+<!-- Robot VanBerto FLUTUANTE — à direita, balão por cima -->
+<div id="vb-float">
+  <div id="vb-float-row">
+    <div id="vbMsgFloat">Começa pelas bordas! 🧩</div>
+    <svg id="vbBotFloat" viewBox="0 0 80 90" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="vbgF" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#e0f7ff"/><stop offset="100%" stop-color="#b3e8fc"/></linearGradient>
+        <linearGradient id="vvgF" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#00e5ff"/><stop offset="100%" stop-color="#00b8d9"/></linearGradient>
+      </defs>
+      <circle cx="40" cy="42" r="34" fill="rgba(0,229,255,.10)"/>
+      <rect x="18" y="32" width="44" height="30" rx="13" fill="url(#vbgF)"/>
+      <circle cx="40" cy="48" r="7" fill="#78909c"/>
+      <rect x="22" y="10" width="36" height="26" rx="13" fill="url(#vbgF)"/>
+      <rect x="26" y="15" width="28" height="16" rx="8" fill="url(#vvgF)"/>
+      <rect x="26" y="15" width="28" height="16" rx="8" fill="#e0f7ff" opacity=".9" style="transform-origin:40px 23px;animation:vbBlink 5s ease-in-out infinite;"/>
+      <circle cx="33" cy="23" r="2.5" fill="#0f172a"/><circle cx="47" cy="23" r="2.5" fill="#0f172a"/>
+      <line x1="40" y1="10" x2="40" y2="4" stroke="#00e5ff" stroke-width="2"/><circle cx="40" cy="3" r="2.5" fill="#00e5ff"/>
+      <rect x="11" y="35" width="7" height="20" rx="3.5" fill="#cfd8dc"/>
+      <rect x="62" y="35" width="7" height="20" rx="3.5" fill="#cfd8dc" style="transform-origin:65.5px 35px;animation:waveVB 1.5s ease-in-out infinite;"/>
+      <rect x="22" y="60" width="12" height="8" rx="3" fill="#1f2937"/><rect x="46" y="60" width="12" height="8" rx="3" fill="#1f2937"/>
+    </svg>
+  </div>
+</div>
+
+<!-- Nome da professora ao centro (ecrãs sem jogo) -->
+<div id="prof-tag"></div>
+
+<!-- Botão ecrã inteiro -->
+<button id="btnFullscreen" title="Ecrã inteiro">⛶</button>
 
 <script>
 (function(){
@@ -889,8 +990,12 @@ const VB_PROGRESS= ['Estás a sair-te muito bem! 🌟','Já mais de metade! 🎉
 
 function vbSay(msg){
   const el=document.getElementById('vbMsgGame');
+  const elF=document.getElementById('vbMsgFloat');
   el.style.opacity=0;
-  setTimeout(()=>{el.textContent=msg;el.style.opacity=1;},200);
+  setTimeout(()=>{
+    el.textContent=msg;el.style.opacity=1;
+    if(elF){elF.style.opacity=0;setTimeout(()=>{elF.textContent=msg;elF.style.opacity=1;},100);}
+  },200);
 }
 function vbRnd(arr){vbSay(arr[Math.floor(Math.random()*arr.length)]);}
 
@@ -950,6 +1055,7 @@ function shuffle(a){
 
 function showStart(){
   document.getElementById('gameArea').style.display='none';
+  document.getElementById('vb-float-prof-center').style.display='none';
   document.getElementById('endMod').style.display='none';
   document.getElementById('startMod').style.display='flex';
   clearInterval(timerInt);
@@ -979,6 +1085,8 @@ function startGame(){
   document.getElementById('gameArea').style.display='flex';
   document.getElementById('gameArea').style.flexDirection='column';
   document.getElementById('gameArea').style.alignItems='center';
+  document.getElementById('vb-float-prof-center').style.display='block';
+  document.getElementById('vbMsgFloat').textContent='Começa pelas bordas! 🧩';
   gameWon=false;
   // Ensure arena has height before countdown (so the overlay is visible on first load)
   getSize();
@@ -1075,7 +1183,7 @@ function initGame(){
   // Set images
   document.getElementById('hintImg').src=IMG_SRC;
   document.getElementById('vrImg').src=IMG_SRC;
-  document.getElementById('endThumbImg').src=IMG_SRC;
+  const _tImg=document.getElementById('endThumbImg'); if(_tImg) _tImg.src=IMG_SRC;
 
   const pos=[];
   for(let r=0;r<rows;r++)for(let c=0;c<cols;c++)pos.push({c,r});
@@ -1267,7 +1375,8 @@ function showEndModal(){
   const endVbMsg = playerName
     ? (isGenius ? playerName+', és absolutamente incrível! 👑🏆' : playerName+', estou muito orgulhoso! 🎉')
     : ((diff==='expert'&&isGenius)?'És absolutamente incrível! 👑🏆':(diff==='expert')?'Conseguiste o modo Expert! 🔥':(diff==='vhard'&&isGenius)?'Estou sem palavras! Fantástico! 🔥':(diff==='vhard')?'Que desafio enorme! Parabéns! 💪':isGenius?'Que incrível! És o melhor! 🏆':'Parabéns! Estou orgulhoso! 🎉');
-  document.getElementById('endVbMsg').textContent=endVbMsg;
+  const endVbMsgEl = document.getElementById('endVbMsg');
+  if(endVbMsgEl) endVbMsgEl.textContent=endVbMsg;
   const endTitle = (diff==='expert'&&isGenius)?'Lendário! 👑':(diff==='expert')?'Expert! 🔥':(diff==='vhard'&&isGenius)?'Master! 🔥':(diff==='vhard')?'Muito bem! 💪':isGenius?'Incrível!':isGood?'Muito bem!':'Parabéns!';
   document.getElementById('endTitle').textContent=endTitle;
 
@@ -1277,7 +1386,7 @@ function showEndModal(){
   sr.innerHTML=stars.split('').filter(s=>s==='⭐').map(s=>`<span>${s}</span>`).join('');
 
   // Thumb
-  document.getElementById('endThumbImg').src=IMG_SRC;
+  const _tImg=document.getElementById('endThumbImg'); if(_tImg) _tImg.src=IMG_SRC;
 
   // Record
   const isRecord = checkRecord(moves);
@@ -1299,6 +1408,7 @@ function showEndModal(){
 
   document.getElementById('victoryReveal').classList.remove('show');
   launchConfetti();
+  document.getElementById('vb-float-prof-center').style.display='none';
   document.getElementById('endMod').style.display='flex';
 }
 
@@ -1379,8 +1489,27 @@ function _onResize(){
     }
   });
 }
-window.addEventListener('resize', _onResize);
-window.addEventListener('orientationchange', ()=>{ setTimeout(_onResize, 120); });
+// ── ECRÃ INTEIRO ──
+const _fsBtn = document.getElementById('btnFullscreen');
+function _updateFsIcon(){
+  const inFs = !!(document.fullscreenElement||document.webkitFullscreenElement||document.mozFullScreenElement);
+  _fsBtn.textContent = inFs ? '✕' : '⛶';
+  _fsBtn.title = inFs ? 'Sair do ecrã inteiro' : 'Ecrã inteiro';
+}
+_fsBtn.addEventListener('click', ()=>{
+  const el = document.documentElement;
+  const inFs = !!(document.fullscreenElement||document.webkitFullscreenElement||document.mozFullScreenElement);
+  if(!inFs){
+    (el.requestFullscreen||el.webkitRequestFullscreen||el.mozRequestFullScreen||el.msRequestFullscreen).call(el);
+  } else {
+    (document.exitFullscreen||document.webkitExitFullscreen||document.mozCancelFullScreen||document.msExitFullscreen).call(document);
+  }
+});
+document.addEventListener('fullscreenchange', _updateFsIcon);
+document.addEventListener('webkitfullscreenchange', _updateFsIcon);
+document.addEventListener('mozfullscreenchange', _updateFsIcon);
+
+
 
 </script>
 </body>
