@@ -161,27 +161,19 @@ body{
 }
 
 @keyframes vbf{0%,100%{transform:translateY(0);}50%{transform:translateY(-7px);}}
-/* Prof tag oculto */
-#prof-tag{ display:none; }
-#prof-robot{ display:none; }
-#vb-float-prof-center{ display:none !important; }
-
-/* NOME DA PROFESSORA — centrado em baixo */
+/* NOME DA PROFESSORA — centrado em baixo, só durante o jogo */
 #vb-float-prof-center{
   position:fixed;
   bottom:.55rem;left:50%;transform:translateX(-50%);
   z-index:700;
-  display:none; /* mostrado só durante o jogo */
+  display:none;
   font-family:'Nunito',sans-serif;
-  font-size:clamp(.65rem,1.8vw,.85rem);
+  font-size:clamp(.65rem,1.8vw,.78rem);
   color:#ffb890;font-weight:800;
   text-shadow:0 1px 6px rgba(0,0,0,.8);
   white-space:nowrap;
-  background:linear-gradient(180deg,rgba(42,10,78,.85),rgba(26,8,53,.85));
-  border:1.5px solid rgba(255,107,53,.35);
-  border-radius:20px;
-  padding:4px 16px;
   pointer-events:none;
+  opacity:.9;
 }
 
 /* VB-BAR FLUTUANTE — robot à direita, sempre visível */
@@ -676,7 +668,7 @@ body{
     </div>
 
     <button class="bplay" onclick="startGame()">🎮 Jogar!</button>
-    <p class="credit">✦ Professora Vanda Várzea ✦</p>
+    <p class="credit">© Professora Vanda Várzea</p>
   </div>
 </div>
 
@@ -726,7 +718,7 @@ body{
       <button class="bplay" onclick="startGame()" style="margin-top:0;font-size:clamp(13px,3.5vw,16px);padding:8px 18px;">🔄 Jogar outra vez</button>
       <button class="bsec" onclick="showStart()" style="margin-top:0;">🏠 Início</button>
     </div>
-    <p class="credit" style="margin-top:10px;">✦ Professora Vanda Várzea ✦</p>
+    <p class="credit" style="margin-top:10px;">© Professora Vanda Várzea</p>
   </div>
 </div>
 
@@ -814,7 +806,7 @@ body{
 </div>
 
 <!-- Nome da professora centrado no topo -->
-<div id="vb-float-prof-center">✦ Professora Vanda Várzea ✦</div>
+<div id="vb-float-prof-center">© Professora Vanda Várzea</div>
 
 <!-- Robot VanBerto FLUTUANTE — à direita, balão por cima -->
 <div id="vb-float">
