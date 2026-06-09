@@ -21,7 +21,7 @@ body{
   color:#ffe0d0;
   min-height:100vh;
   display:flex;flex-direction:column;align-items:center;
-  overflow-x:hidden;
+  overflow:hidden;
   background:
     radial-gradient(ellipse 70% 55% at 50% 45%,rgba(255,107,53,.16) 0%,rgba(26,10,46,0) 55%,rgba(10,4,20,.94) 100%),
     #1a0a2e;
@@ -528,7 +528,14 @@ body{
   .endStat{width:90%;}
 }
 
-/* END THUMB GLOW */
+/* ── SCALE ROOT (desktop PC scaling) ── */
+#scaleRoot{
+  transform-origin: top left;
+  /* width/height set dynamically by JS; default 100% for mobile/non-scaled */
+  width: 100%;
+  min-height: 100vh;
+}
+
 @keyframes thumbGlow{
   from{box-shadow:0 0 0 3px var(--orange),0 0 0 5px var(--gold),6px 6px 0 var(--dark);}
   to{box-shadow:0 0 0 3px var(--orange),0 0 0 5px var(--gold),6px 6px 0 var(--dark),0 0 30px rgba(255,215,0,.35);}
@@ -644,6 +651,8 @@ body{
 
 <!-- Stars background -->
 <div class="stars" id="stars"></div>
+
+<div id="scaleRoot">
 
 <!-- ══ MODAL INÍCIO ══ -->
 <div class="movl" id="startMod">
@@ -1009,16 +1018,28 @@ function getSize(){
   const aspect = getAspect();
   const isPortrait = window.innerHeight > window.innerWidth;
 
+  // Get the current scale factor (1 if not scaled)
+  function _getScale(){
+    const root = document.getElementById('scaleRoot');
+    if(!root || !root.style.transform) return 1;
+    const m = root.style.transform.match(/scale\(([^)]+)\)/);
+    return m ? parseFloat(m[1]) || 1 : 1;
+  }
+  const scale = _getScale();
+  // Logical viewport dimensions (what the content thinks it has)
+  const logicalW = Math.round(window.innerWidth / scale);
+  const logicalH = Math.round(window.innerHeight / scale);
+
   // Measure available width from the arena wrapper
   let w = wrap.clientWidth;
   if(!w || w < 10){
     const ga = document.getElementById('gameArea');
-    const gaW = ga.clientWidth || window.innerWidth;
+    const gaW = ga.clientWidth || logicalW;
     const padEach = Math.max(6, Math.round(gaW * 0.015));
     w = gaW - padEach * 2;
   }
-  // Never exceed 98vw
-  w = Math.min(w, Math.round(window.innerWidth * 0.98));
+  // Never exceed 98% of logical viewport
+  w = Math.min(w, Math.round(logicalW * 0.98));
 
   let h = Math.round(w / aspect);
 
@@ -1028,9 +1049,9 @@ function getSize(){
     const maxH = window.innerHeight - reservedH;
     if(h > maxH && maxH > 60){ h = maxH; w = Math.round(h * aspect); }
   } else if(window.innerWidth > 768){
-    // Desktop landscape: limit height so arena stays in viewport
+    // Desktop landscape: limit height so arena stays in logical viewport
     const reservedH = 145;
-    const maxH = window.innerHeight - reservedH;
+    const maxH = logicalH - reservedH;
     if(h > maxH && maxH > 80){ h = maxH; w = Math.round(h * aspect); }
   }
 
@@ -1234,11 +1255,13 @@ function initGame(){
 
 function makeDraggable(el){
   let sx,sy,sL,sT;
-  // CSS zoom causes clientX/Y to be in viewport coords but piece positions
-  // are in zoomed-content coords, so we must divide mouse deltas by the zoom factor.
+  // transform:scale causes clientX/Y to be in viewport coords but piece positions
+  // are in scaled-content coords, so we must divide mouse deltas by the scale factor.
   function getZoom(){
-    const z = document.documentElement.style.zoom;
-    return z ? parseFloat(z) || 1 : 1;
+    const root = document.getElementById('scaleRoot');
+    if(!root || !root.style.transform) return 1;
+    const m = root.style.transform.match(/scale\(([^)]+)\)/);
+    return m ? parseFloat(m[1]) || 1 : 1;
   }
   const dn=e=>{
     if(gameWon||paused)return;
@@ -1513,58 +1536,61 @@ document.addEventListener('mozfullscreenchange', _updateFsIcon);
 
 
 // ── PC RESPONSIVE SCALING ──
-// Applies only on desktop landscape (width > 768px, not a touch device).
-// Scales the entire page using CSS zoom on <html> so that ALL elements
-// (start modal, game area, end modal, fixed overlays) scale proportionally.
-// Scale factor: Math.min(innerWidth / 1920, innerHeight / 1080), clamped to [0.42, 1].
+// Uses transform:scale on #scaleRoot so it works in ALL browsers (Chrome, Firefox, Safari, Edge)
+// regardless of meta viewport restrictions.
+// Only activates on desktop landscape (width > 768px, non-touch).
+// Scale = Math.min(innerWidth / 1920, innerHeight / 1080), clamped [0.42, 1].
 
 (function(){
   const REF_W = 1920, REF_H = 1080, SCALE_MIN = 0.42;
-  let _currentZoom = 1;
+  let _scale = 1;
 
   function isDesktopLandscape(){
-    // Exclude touch-primary devices (phones/tablets)
     return window.innerWidth > 768
       && window.innerWidth >= window.innerHeight
       && !(navigator.maxTouchPoints > 1 && window.innerWidth < 1100);
   }
 
   function applyScale(){
-    const root = document.documentElement;
+    const root = document.getElementById('scaleRoot');
+    if(!root) return;
 
     if(!isDesktopLandscape()){
-      if(_currentZoom !== 1){
-        root.style.zoom = '';
-        document.body.style.overflowX = '';
-        _currentZoom = 1;
+      if(_scale !== 1){
+        root.style.transform = '';
+        root.style.width = '';
+        root.style.height = '';
+        _scale = 1;
       }
       return;
     }
 
     const vw = window.innerWidth;
     const vh = window.innerHeight;
-    const scale = Math.max(SCALE_MIN, Math.min(1, Math.min(vw / REF_W, vh / REF_H)));
+    const s = Math.max(SCALE_MIN, Math.min(1, Math.min(vw / REF_W, vh / REF_H)));
 
-    if(Math.abs(scale - _currentZoom) < 0.001) return; // nothing changed
-    _currentZoom = scale;
+    if(Math.abs(s - _scale) < 0.001) return;
+    _scale = s;
 
-    if(scale >= 0.99){
-      root.style.zoom = '';
-      document.body.style.overflowX = '';
+    if(s >= 0.99){
+      root.style.transform = '';
+      root.style.width = '';
+      root.style.height = '';
     } else {
-      root.style.zoom = scale;
-      document.body.style.overflowX = 'hidden';
+      // Scale from top-left; expand logical size so content fills 1920×1080 reference
+      root.style.transform = 'scale(' + s + ')';
+      root.style.width  = Math.round(vw / s) + 'px';
+      root.style.height = Math.round(vh / s) + 'px';
     }
   }
 
-  // Re-apply on every resize
   window.addEventListener('resize', applyScale);
-
-  // Initial apply (runs after the rest of the script has set up the DOM)
   setTimeout(applyScale, 0);
 })();
 
 
 </script>
+</div><!-- /scaleRoot -->
+
 </body>
 </html>
