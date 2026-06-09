@@ -531,9 +531,7 @@ body{
 /* ── SCALE ROOT (desktop PC scaling) ── */
 #scaleRoot{
   transform-origin: top left;
-  /* width/height set dynamically by JS; default 100% for mobile/non-scaled */
   width: 100%;
-  min-height: 100vh;
 }
 
 @keyframes thumbGlow{
@@ -1536,10 +1534,8 @@ document.addEventListener('mozfullscreenchange', _updateFsIcon);
 
 
 // ── PC RESPONSIVE SCALING ──
-// Uses transform:scale on #scaleRoot so it works in ALL browsers (Chrome, Firefox, Safari, Edge)
-// regardless of meta viewport restrictions.
-// Only activates on desktop landscape (width > 768px, non-touch).
-// Scale = Math.min(innerWidth / 1920, innerHeight / 1080), clamped [0.42, 1].
+// Uses transform:scale on #scaleRoot — works in ALL browsers.
+// Only on desktop landscape (innerWidth > 768, non-touch).
 
 (function(){
   const REF_W = 1920, REF_H = 1080, SCALE_MIN = 0.42;
@@ -1560,6 +1556,7 @@ document.addEventListener('mozfullscreenchange', _updateFsIcon);
         root.style.transform = '';
         root.style.width = '';
         root.style.height = '';
+        document.body.style.overflow = '';
         _scale = 1;
       }
       return;
@@ -1569,22 +1566,31 @@ document.addEventListener('mozfullscreenchange', _updateFsIcon);
     const vh = window.innerHeight;
     const s = Math.max(SCALE_MIN, Math.min(1, Math.min(vw / REF_W, vh / REF_H)));
 
-    if(Math.abs(s - _scale) < 0.001) return;
     _scale = s;
 
     if(s >= 0.99){
       root.style.transform = '';
       root.style.width = '';
       root.style.height = '';
+      document.body.style.overflow = '';
     } else {
-      // Scale from top-left; expand logical size so content fills 1920×1080 reference
+      // Expand the logical canvas so scaled content fills the visual viewport
+      const logicalW = Math.round(vw / s);
+      const logicalH = Math.round(vh / s);
+      root.style.width  = logicalW + 'px';
+      root.style.height = logicalH + 'px';
       root.style.transform = 'scale(' + s + ')';
-      root.style.width  = Math.round(vw / s) + 'px';
-      root.style.height = Math.round(vh / s) + 'px';
+      // Prevent scrollbars — the scaled-down content fits the real viewport
+      document.body.style.overflow = 'hidden';
     }
+
+    // Trigger arena resize if game is running
+    if(typeof _onResize === 'function') setTimeout(_onResize, 50);
   }
 
   window.addEventListener('resize', applyScale);
+  // Run after DOM + other scripts are ready
+  window.addEventListener('load', function(){ setTimeout(applyScale, 0); });
   setTimeout(applyScale, 0);
 })();
 
