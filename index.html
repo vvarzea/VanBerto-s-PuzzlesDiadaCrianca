@@ -1234,6 +1234,12 @@ function initGame(){
 
 function makeDraggable(el){
   let sx,sy,sL,sT;
+  // CSS zoom causes clientX/Y to be in viewport coords but piece positions
+  // are in zoomed-content coords, so we must divide mouse deltas by the zoom factor.
+  function getZoom(){
+    const ga=document.getElementById('gameArea');
+    return ga && ga.style.zoom ? parseFloat(ga.style.zoom) || 1 : 1;
+  }
   const dn=e=>{
     if(gameWon||paused)return;
     e.preventDefault();
@@ -1249,8 +1255,9 @@ function makeDraggable(el){
   const mv=e=>{
     e.preventDefault();
     const t=e.touches?e.touches[0]:e;
-    el.style.left=(sL+t.clientX-sx)+'px';
-    el.style.top=(sT+t.clientY-sy)+'px';
+    const z=getZoom();
+    el.style.left=(sL+(t.clientX-sx)/z)+'px';
+    el.style.top=(sT+(t.clientY-sy)/z)+'px';
   };
   const up=()=>{
     el.classList.remove('dragging');
@@ -1506,14 +1513,18 @@ document.addEventListener('mozfullscreenchange', _updateFsIcon);
 
 
 // ── PC RESPONSIVE SCALING ──
-// Applies only on desktop landscape (width > 768px, not narrow touch).
-// Scale factor: Math.min(innerWidth/1920, innerHeight/1080).
-// Uses position+left to keep the gameArea centred when scaled down.
+// Applies only on desktop landscape (width > 768px, not a touch device).
+// Uses CSS zoom (instead of transform:scale) so that:
+//   1. All layout/dimensions reflow naturally inside the scaled container.
+//   2. Drag coordinates (clientX/Y) are already in zoomed space — no correction needed.
+// Scale factor: Math.min(innerWidth / 1920, innerHeight / 1080), clamped to [0.42, 1].
 
 (function(){
   const REF_W = 1920, REF_H = 1080, SCALE_MIN = 0.42;
+  let _currentZoom = 1;
 
   function isDesktopLandscape(){
+    // Exclude touch-primary devices (phones/tablets)
     return window.innerWidth > 768
       && window.innerWidth >= window.innerHeight
       && !(navigator.maxTouchPoints > 1 && window.innerWidth < 1100);
@@ -1524,13 +1535,11 @@ document.addEventListener('mozfullscreenchange', _updateFsIcon);
     if(!ga) return;
 
     if(!isDesktopLandscape() || ga.style.display === 'none'){
-      ga.style.transform = '';
-      ga.style.transformOrigin = '';
-      ga.style.position = '';
-      ga.style.left = '';
-      ga.style.marginBottom = '';
-      ga.style.width = '';
-      document.body.style.overflowX = '';
+      if(_currentZoom !== 1){
+        ga.style.zoom = '';
+        document.body.style.overflowX = '';
+        _currentZoom = 1;
+      }
       return;
     }
 
@@ -1538,46 +1547,30 @@ document.addEventListener('mozfullscreenchange', _updateFsIcon);
     const vh = window.innerHeight;
     const scale = Math.max(SCALE_MIN, Math.min(1, Math.min(vw / REF_W, vh / REF_H)));
 
+    if(scale === _currentZoom) return; // nothing changed
+    _currentZoom = scale;
+
     if(scale >= 0.99){
-      ga.style.transform = '';
-      ga.style.transformOrigin = '';
-      ga.style.position = '';
-      ga.style.left = '';
-      ga.style.marginBottom = '';
-      ga.style.width = '';
+      ga.style.zoom = '';
       document.body.style.overflowX = '';
-      return;
+    } else {
+      ga.style.zoom = scale;
+      document.body.style.overflowX = 'hidden';
     }
-
-    // Natural width at full scale, then shrink via transform
-    const naturalW = Math.min(980, vw);
-    const scaledH = ga.scrollHeight * scale;
-
-    ga.style.width = naturalW + 'px';
-    ga.style.transformOrigin = 'top center';
-    ga.style.transform = `scale(${scale})`;
-    // Centre: push right by (vw - naturalW*scale) / 2, accounting for body centering
-    // Since body uses flex+align-items:center the element is already centred —
-    // transform: scale shrinks it in place, so centering is preserved automatically.
-    ga.style.position = '';
-    ga.style.left = '';
-    // Collapse the empty space left below the shrunken element
-    ga.style.marginBottom = `-${Math.round(ga.scrollHeight * (1 - scale))}px`;
-    document.body.style.overflowX = 'hidden';
   }
 
-  // Extend existing resize handler
+  // Re-apply on every resize
   window.addEventListener('resize', applyScale);
 
-  // Watch gameArea visibility (game start/end/back)
+  // Re-apply whenever gameArea is shown/hidden (game start / end / back to menu)
   const ga = document.getElementById('gameArea');
   if(ga){
     new MutationObserver(function(){ setTimeout(applyScale, 40); })
       .observe(ga, { attributes: true, attributeFilter: ['style'] });
   }
 
-  // Initial apply
-  applyScale();
+  // Initial apply (runs after the rest of the script has set up the DOM)
+  setTimeout(applyScale, 0);
 })();
 
 
