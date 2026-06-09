@@ -528,7 +528,36 @@ body{
   .endStat{width:90%;}
 }
 
-/* END THUMB GLOW */
+/* ── DESKTOP SMALL HEIGHT — modal compacto para portáteis ── */
+@media(min-width:769px) and (max-height:800px) and (orientation:landscape){
+  .mcard{
+    padding:clamp(8px,1.5vh,16px) clamp(12px,2vw,24px);
+    max-height:96vh;
+    border-radius:12px;
+  }
+  .mcard h2{font-size:clamp(17px,2.5vw,22px);margin-bottom:2px;padding-bottom:4px;}
+  .mcard p{font-size:12px;line-height:1.4;margin-bottom:6px;}
+  .mcard > div[style*="font-size"]{font-size:clamp(28px,5vh,40px)!important;margin-bottom:2px!important;}
+  .name-wrap{margin:6px 0 10px;}
+  .name-label{font-size:12px;}
+  #playerNameInput{font-size:13px;padding:6px 12px;}
+  .diff-row{gap:5px;margin-bottom:10px;}
+  .dbtn{font-size:11px;padding:5px 10px;}
+  .bplay{font-size:14px;padding:8px 24px;margin-top:6px;}
+  .credit{margin-top:6px;font-size:11px;}
+  /* End modal */
+  #endMod .mcard{padding:10px 16px 14px;}
+  #endMod h2{font-size:clamp(15px,2.2vw,20px);}
+  #endMod .star-rating{font-size:clamp(18px,3.5vh,26px);margin:2px 0 3px;}
+  #endMod .mscore{font-size:clamp(18px,3.5vh,26px);}
+  #endStats{gap:6px;margin:4px 0 3px;}
+  .endStat{padding:3px 10px;}
+  .endStat .es-val{font-size:13px;}
+  #tipCard{padding:5px 10px;margin:4px 0 3px;}
+  #tipCard .tip-text{font-size:11px;}
+  #endThumb{margin:6px 0 3px;}
+}
+
 @keyframes thumbGlow{
   from{box-shadow:0 0 0 3px var(--orange),0 0 0 5px var(--gold),6px 6px 0 var(--dark);}
   to{box-shadow:0 0 0 3px var(--orange),0 0 0 5px var(--gold),6px 6px 0 var(--dark),0 0 30px rgba(255,215,0,.35);}
