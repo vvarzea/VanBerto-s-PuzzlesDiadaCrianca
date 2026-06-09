@@ -21,7 +21,7 @@ body{
   color:#ffe0d0;
   min-height:100vh;
   display:flex;flex-direction:column;align-items:center;
-  overflow:hidden;
+  overflow-x:hidden;
   background:
     radial-gradient(ellipse 70% 55% at 50% 45%,rgba(255,107,53,.16) 0%,rgba(26,10,46,0) 55%,rgba(10,4,20,.94) 100%),
     #1a0a2e;
@@ -528,12 +528,7 @@ body{
   .endStat{width:90%;}
 }
 
-/* ── SCALE ROOT (desktop PC scaling) ── */
-#scaleRoot{
-  transform-origin: top left;
-  width: 100%;
-}
-
+/* END THUMB GLOW */
 @keyframes thumbGlow{
   from{box-shadow:0 0 0 3px var(--orange),0 0 0 5px var(--gold),6px 6px 0 var(--dark);}
   to{box-shadow:0 0 0 3px var(--orange),0 0 0 5px var(--gold),6px 6px 0 var(--dark),0 0 30px rgba(255,215,0,.35);}
@@ -649,8 +644,6 @@ body{
 
 <!-- Stars background -->
 <div class="stars" id="stars"></div>
-
-<div id="scaleRoot">
 
 <!-- ══ MODAL INÍCIO ══ -->
 <div class="movl" id="startMod">
@@ -1015,29 +1008,21 @@ function getDims(){
 function getSize(){
   const aspect = getAspect();
   const isPortrait = window.innerHeight > window.innerWidth;
-
-  // Get the current scale factor (1 if not scaled)
-  function _getScale(){
-    const root = document.getElementById('scaleRoot');
-    if(!root || !root.style.transform) return 1;
-    const m = root.style.transform.match(/scale\(([^)]+)\)/);
-    return m ? parseFloat(m[1]) || 1 : 1;
-  }
-  const scale = _getScale();
-  // Logical viewport dimensions (what the content thinks it has)
-  const logicalW = Math.round(window.innerWidth / scale);
-  const logicalH = Math.round(window.innerHeight / scale);
+  const s = (window._getPCScale && window._getPCScale()) || 1;
+  // Logical viewport (what zoomed content "thinks" it has)
+  const logW = Math.round(window.innerWidth / s);
+  const logH = Math.round(window.innerHeight / s);
 
   // Measure available width from the arena wrapper
   let w = wrap.clientWidth;
   if(!w || w < 10){
     const ga = document.getElementById('gameArea');
-    const gaW = ga.clientWidth || logicalW;
+    const gaW = ga.clientWidth || logW;
     const padEach = Math.max(6, Math.round(gaW * 0.015));
     w = gaW - padEach * 2;
   }
   // Never exceed 98% of logical viewport
-  w = Math.min(w, Math.round(logicalW * 0.98));
+  w = Math.min(w, Math.round(logW * 0.98));
 
   let h = Math.round(w / aspect);
 
@@ -1049,7 +1034,7 @@ function getSize(){
   } else if(window.innerWidth > 768){
     // Desktop landscape: limit height so arena stays in logical viewport
     const reservedH = 145;
-    const maxH = logicalH - reservedH;
+    const maxH = logH - reservedH;
     if(h > maxH && maxH > 80){ h = maxH; w = Math.round(h * aspect); }
   }
 
@@ -1253,13 +1238,10 @@ function initGame(){
 
 function makeDraggable(el){
   let sx,sy,sL,sT;
-  // transform:scale causes clientX/Y to be in viewport coords but piece positions
-  // are in scaled-content coords, so we must divide mouse deltas by the scale factor.
+  // CSS zoom causes clientX/Y to be in viewport coords but piece positions
+  // are in zoomed-content coords, so we must divide mouse deltas by the zoom factor.
   function getZoom(){
-    const root = document.getElementById('scaleRoot');
-    if(!root || !root.style.transform) return 1;
-    const m = root.style.transform.match(/scale\(([^)]+)\)/);
-    return m ? parseFloat(m[1]) || 1 : 1;
+    return (window._getPCScale && window._getPCScale()) || 1;
   }
   const dn=e=>{
     if(gameWon||paused)return;
@@ -1534,12 +1516,15 @@ document.addEventListener('mozfullscreenchange', _updateFsIcon);
 
 
 // ── PC RESPONSIVE SCALING ──
-// Uses transform:scale on #scaleRoot — works in ALL browsers.
-// Only on desktop landscape (innerWidth > 768, non-touch).
+// Desktop landscape only (innerWidth > 768, non-touch).
+// Applies CSS zoom to all three screens so modals + game all scale correctly.
+// On Firefox (no zoom support) falls back to transform:scale with centering.
 
 (function(){
   const REF_W = 1920, REF_H = 1080, SCALE_MIN = 0.42;
   let _scale = 1;
+
+  const SCREENS = ['startMod','gameArea','endMod'];
 
   function isDesktopLandscape(){
     return window.innerWidth > 768
@@ -1547,56 +1532,82 @@ document.addEventListener('mozfullscreenchange', _updateFsIcon);
       && !(navigator.maxTouchPoints > 1 && window.innerWidth < 1100);
   }
 
+  // Detect Firefox (no CSS zoom support for layout)
+  const isFirefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
+
   function applyScale(){
-    const root = document.getElementById('scaleRoot');
-    if(!root) return;
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
 
     if(!isDesktopLandscape()){
       if(_scale !== 1){
-        root.style.transform = '';
-        root.style.width = '';
-        root.style.height = '';
-        document.body.style.overflow = '';
-        _scale = 1;
+        SCREENS.forEach(id=>{
+          const el=document.getElementById(id);
+          if(!el) return;
+          el.style.zoom='';
+          el.style.transform='';
+          el.style.transformOrigin='';
+          el.style.position='';
+          el.style.left='';
+          el.style.top='';
+          el.style.width='';
+          el.style.height='';
+        });
+        document.body.style.overflow='';
+        _scale=1;
       }
       return;
     }
 
-    const vw = window.innerWidth;
-    const vh = window.innerHeight;
-    const s = Math.max(SCALE_MIN, Math.min(1, Math.min(vw / REF_W, vh / REF_H)));
+    const s = Math.max(SCALE_MIN, Math.min(1, Math.min(vw/REF_W, vh/REF_H)));
+    if(Math.abs(s-_scale)<0.001) return;
+    _scale=s;
 
-    _scale = s;
-
-    if(s >= 0.99){
-      root.style.transform = '';
-      root.style.width = '';
-      root.style.height = '';
-      document.body.style.overflow = '';
-    } else {
-      // Expand the logical canvas so scaled content fills the visual viewport
-      const logicalW = Math.round(vw / s);
-      const logicalH = Math.round(vh / s);
-      root.style.width  = logicalW + 'px';
-      root.style.height = logicalH + 'px';
-      root.style.transform = 'scale(' + s + ')';
-      // Prevent scrollbars — the scaled-down content fits the real viewport
-      document.body.style.overflow = 'hidden';
+    if(s>=0.99){
+      SCREENS.forEach(id=>{
+        const el=document.getElementById(id);
+        if(!el) return;
+        el.style.zoom='';
+        el.style.transform='';
+        el.style.transformOrigin='';
+        el.style.position='';
+        el.style.left='';
+        el.style.top='';
+        el.style.width='';
+        el.style.height='';
+      });
+      document.body.style.overflow='';
+      return;
     }
 
-    // Trigger arena resize if game is running
-    if(typeof _onResize === 'function') setTimeout(_onResize, 50);
+    document.body.style.overflow='hidden';
+
+    SCREENS.forEach(id=>{
+      const el=document.getElementById(id);
+      if(!el) return;
+      if(!isFirefox){
+        // Chrome/Edge/Safari: zoom reflowing layout perfectly
+        el.style.zoom=s;
+        el.style.transform='';
+      } else {
+        // Firefox: transform:scale with centering
+        // Fixed/absolute elements need manual centering
+        el.style.zoom='';
+        el.style.transformOrigin='top center';
+        el.style.transform='scale('+s+')';
+      }
+    });
   }
 
   window.addEventListener('resize', applyScale);
-  // Run after DOM + other scripts are ready
-  window.addEventListener('load', function(){ setTimeout(applyScale, 0); });
+  window.addEventListener('load', function(){ setTimeout(applyScale,0); });
   setTimeout(applyScale, 0);
+
+  // Expose scale getter for drag coordinate correction
+  window._getPCScale = function(){ return _scale; };
 })();
 
 
 </script>
-</div><!-- /scaleRoot -->
-
 </body>
 </html>
