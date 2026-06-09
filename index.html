@@ -1022,15 +1022,16 @@ function getSize(){
 
   let h = Math.round(w / aspect);
 
-  // In portrait: also constrain by available vertical space so puzzle fits on screen
-  // Reserve ~160px for HUD + vb-bar + progress bar
+  // Constrain by available vertical space
   if(isPortrait){
     const reservedH = window.innerWidth < 400 ? 170 : 155;
     const maxH = window.innerHeight - reservedH;
-    if(h > maxH && maxH > 60){
-      h = maxH;
-      w = Math.round(h * aspect);
-    }
+    if(h > maxH && maxH > 60){ h = maxH; w = Math.round(h * aspect); }
+  } else if(window.innerWidth > 768){
+    // Desktop landscape: limit height so arena stays in viewport
+    const reservedH = 145;
+    const maxH = window.innerHeight - reservedH;
+    if(h > maxH && maxH > 80){ h = maxH; w = Math.round(h * aspect); }
   }
 
   arena.style.height = h + 'px';
@@ -1454,7 +1455,9 @@ function _onResize(){
   const newH = window.innerHeight;
   // Reposition if width OR orientation changed (portrait<->landscape)
   const orientChanged = (newH > newW) !== (_lastResizeH > _lastResizeW);
-  if(newW === _lastResizeW && !orientChanged) return;
+  const isDesktopL = newW > 768 && newW >= newH;
+  const heightChanged = isDesktopL && Math.abs(newH - _lastResizeH) > 8;
+  if(newW === _lastResizeW && !orientChanged && !heightChanged) return;
   _lastResizeW = newW;
   _lastResizeH = newH;
   if(!pieces.length) return;
@@ -1501,6 +1504,81 @@ document.addEventListener('fullscreenchange', _updateFsIcon);
 document.addEventListener('webkitfullscreenchange', _updateFsIcon);
 document.addEventListener('mozfullscreenchange', _updateFsIcon);
 
+
+// ── PC RESPONSIVE SCALING ──
+// Applies only on desktop landscape (width > 768px, not narrow touch).
+// Scale factor: Math.min(innerWidth/1920, innerHeight/1080).
+// Uses position+left to keep the gameArea centred when scaled down.
+
+(function(){
+  const REF_W = 1920, REF_H = 1080, SCALE_MIN = 0.42;
+
+  function isDesktopLandscape(){
+    return window.innerWidth > 768
+      && window.innerWidth >= window.innerHeight
+      && !(navigator.maxTouchPoints > 1 && window.innerWidth < 1100);
+  }
+
+  function applyScale(){
+    const ga = document.getElementById('gameArea');
+    if(!ga) return;
+
+    if(!isDesktopLandscape() || ga.style.display === 'none'){
+      ga.style.transform = '';
+      ga.style.transformOrigin = '';
+      ga.style.position = '';
+      ga.style.left = '';
+      ga.style.marginBottom = '';
+      ga.style.width = '';
+      document.body.style.overflowX = '';
+      return;
+    }
+
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    const scale = Math.max(SCALE_MIN, Math.min(1, Math.min(vw / REF_W, vh / REF_H)));
+
+    if(scale >= 0.99){
+      ga.style.transform = '';
+      ga.style.transformOrigin = '';
+      ga.style.position = '';
+      ga.style.left = '';
+      ga.style.marginBottom = '';
+      ga.style.width = '';
+      document.body.style.overflowX = '';
+      return;
+    }
+
+    // Natural width at full scale, then shrink via transform
+    const naturalW = Math.min(980, vw);
+    const scaledH = ga.scrollHeight * scale;
+
+    ga.style.width = naturalW + 'px';
+    ga.style.transformOrigin = 'top center';
+    ga.style.transform = `scale(${scale})`;
+    // Centre: push right by (vw - naturalW*scale) / 2, accounting for body centering
+    // Since body uses flex+align-items:center the element is already centred —
+    // transform: scale shrinks it in place, so centering is preserved automatically.
+    ga.style.position = '';
+    ga.style.left = '';
+    // Collapse the empty space left below the shrunken element
+    ga.style.marginBottom = `-${Math.round(ga.scrollHeight * (1 - scale))}px`;
+    document.body.style.overflowX = 'hidden';
+  }
+
+  // Extend existing resize handler
+  window.addEventListener('resize', applyScale);
+
+  // Watch gameArea visibility (game start/end/back)
+  const ga = document.getElementById('gameArea');
+  if(ga){
+    new MutationObserver(function(){ setTimeout(applyScale, 40); })
+      .observe(ga, { attributes: true, attributeFilter: ['style'] });
+  }
+
+  // Initial apply
+  applyScale();
+})();
 
 
 </script>
