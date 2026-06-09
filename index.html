@@ -92,13 +92,13 @@ body{
 .bsec:active{transform:translate(2px,2px);box-shadow:2px 2px 0 var(--dark);}
 
 /* Difficulty */
-.diff-row{display:flex;gap:8px;justify-content:center;margin-bottom:18px;flex-wrap:wrap;}
+.diff-row{display:flex;gap:5px;justify-content:center;margin-bottom:18px;flex-wrap:nowrap;}
 .dbtn{
-  font-family:'Baloo 2',sans-serif;font-weight:900;font-size:clamp(11px,2.5vw,13px);
-  padding:8px 14px;border-radius:20px;line-height:1.35;
+  font-family:'Baloo 2',sans-serif;font-weight:900;font-size:clamp(10px,1.8vw,13px);
+  padding:7px 10px;border-radius:20px;line-height:1.35;
   border:2px solid transparent;background:rgba(255,107,53,.06);
   color:rgba(255,184,160,.6);cursor:pointer;transition:all .18s;
-  touch-action:manipulation;
+  touch-action:manipulation;flex:1;min-width:0;
 }
 .dbtn.on{border-color:var(--orange);color:#fff8e0;background:rgba(255,107,53,.18);box-shadow:0 0 12px rgba(255,107,53,.4);}
 .dbtn:hover:not(.on){border-color:rgba(255,107,53,.4);color:#ffb8a0;}
@@ -541,8 +541,8 @@ body{
   .name-wrap{margin:6px 0 10px;}
   .name-label{font-size:12px;}
   #playerNameInput{font-size:13px;padding:6px 12px;}
-  .diff-row{gap:5px;margin-bottom:10px;}
-  .dbtn{font-size:11px;padding:5px 10px;}
+  .diff-row{gap:4px;margin-bottom:10px;flex-wrap:nowrap;}
+  .dbtn{font-size:10px;padding:5px 6px;}
   .bplay{font-size:14px;padding:8px 24px;margin-top:6px;}
   .credit{margin-top:6px;font-size:11px;}
   /* End modal */
