@@ -1237,8 +1237,8 @@ function makeDraggable(el){
   // CSS zoom causes clientX/Y to be in viewport coords but piece positions
   // are in zoomed-content coords, so we must divide mouse deltas by the zoom factor.
   function getZoom(){
-    const ga=document.getElementById('gameArea');
-    return ga && ga.style.zoom ? parseFloat(ga.style.zoom) || 1 : 1;
+    const z = document.documentElement.style.zoom;
+    return z ? parseFloat(z) || 1 : 1;
   }
   const dn=e=>{
     if(gameWon||paused)return;
@@ -1514,9 +1514,8 @@ document.addEventListener('mozfullscreenchange', _updateFsIcon);
 
 // ── PC RESPONSIVE SCALING ──
 // Applies only on desktop landscape (width > 768px, not a touch device).
-// Uses CSS zoom (instead of transform:scale) so that:
-//   1. All layout/dimensions reflow naturally inside the scaled container.
-//   2. Drag coordinates (clientX/Y) are already in zoomed space — no correction needed.
+// Scales the entire page using CSS zoom on <html> so that ALL elements
+// (start modal, game area, end modal, fixed overlays) scale proportionally.
 // Scale factor: Math.min(innerWidth / 1920, innerHeight / 1080), clamped to [0.42, 1].
 
 (function(){
@@ -1531,12 +1530,11 @@ document.addEventListener('mozfullscreenchange', _updateFsIcon);
   }
 
   function applyScale(){
-    const ga = document.getElementById('gameArea');
-    if(!ga) return;
+    const root = document.documentElement;
 
-    if(!isDesktopLandscape() || ga.style.display === 'none'){
+    if(!isDesktopLandscape()){
       if(_currentZoom !== 1){
-        ga.style.zoom = '';
+        root.style.zoom = '';
         document.body.style.overflowX = '';
         _currentZoom = 1;
       }
@@ -1547,27 +1545,20 @@ document.addEventListener('mozfullscreenchange', _updateFsIcon);
     const vh = window.innerHeight;
     const scale = Math.max(SCALE_MIN, Math.min(1, Math.min(vw / REF_W, vh / REF_H)));
 
-    if(scale === _currentZoom) return; // nothing changed
+    if(Math.abs(scale - _currentZoom) < 0.001) return; // nothing changed
     _currentZoom = scale;
 
     if(scale >= 0.99){
-      ga.style.zoom = '';
+      root.style.zoom = '';
       document.body.style.overflowX = '';
     } else {
-      ga.style.zoom = scale;
+      root.style.zoom = scale;
       document.body.style.overflowX = 'hidden';
     }
   }
 
   // Re-apply on every resize
   window.addEventListener('resize', applyScale);
-
-  // Re-apply whenever gameArea is shown/hidden (game start / end / back to menu)
-  const ga = document.getElementById('gameArea');
-  if(ga){
-    new MutationObserver(function(){ setTimeout(applyScale, 40); })
-      .observe(ga, { attributes: true, attributeFilter: ['style'] });
-  }
 
   // Initial apply (runs after the rest of the script has set up the DOM)
   setTimeout(applyScale, 0);
