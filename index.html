@@ -50,7 +50,7 @@ body{
   text-align:center;width:min(480px,96%);
   animation:cardPop .3s cubic-bezier(.34,1.56,.64,1) both;
   overflow-y:auto;
-  max-height:94vh;
+  max-height:96vh;
   -webkit-overflow-scrolling:touch;
 }
 .mcard::before{content:'🌟';position:absolute;top:8px;left:10px;font-size:18px;opacity:.65;pointer-events:none;}
@@ -418,16 +418,19 @@ body{
 /* ── END MODAL — card mais compacto ── */
 #endMod .mcard{
   width:min(480px,96%);
+  padding:clamp(8px,1.8vh,18px) clamp(14px,3.5vw,32px);
 }
 #endMod #endStats{
   display:flex;gap:8px;margin:0;flex-shrink:0;align-items:center;
 }
-#endMod h2{font-size:clamp(17px,4.5vw,22px);}
-#endMod .star-rating{font-size:clamp(20px,5vw,28px);margin:2px 0 4px;}
+#endMod h2{font-size:clamp(17px,4.5vw,22px);margin-bottom:2px;padding-bottom:4px;}
+#endMod .star-rating{font-size:clamp(20px,5vw,28px);margin:2px 0 3px;}
 #endMod .mscore{font-size:clamp(20px,4.5vw,30px);}
-#endMod p#endTxt{font-size:12px;margin-top:4px;}
+#endMod p#endTxt{font-size:12px;margin-top:4px;margin-bottom:4px;}
 #endMod #tipCard{padding:6px 10px;margin:4px 0;}
 #endMod #tipCard .tip-text{font-size:clamp(10px,2.5vw,12px);}
+#endMod #endThumb{margin:6px 0 4px;}
+#endMod #endThumb img{max-height:min(28vh,200px);width:100%;object-fit:cover;}
 
 /* ── END MODAL MOBILE ── */
 @media(max-width:540px){
