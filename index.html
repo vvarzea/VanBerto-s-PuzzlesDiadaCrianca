@@ -39,8 +39,8 @@ body{
 @keyframes twinkle{0%,100%{opacity:0;}50%{opacity:var(--op,.6);}}
 
 /* ── MODAL SHARED ── */
-.movl{position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;padding:1rem;}
-.mbg{position:absolute;inset:0;background:rgba(8,3,20,.88);backdrop-filter:blur(16px);}
+.movl{position:fixed;inset:0;z-index:1000;display:flex;align-items:flex-start;justify-content:center;padding:1rem;overflow-y:auto;}
+.mbg{position:fixed;inset:0;background:rgba(8,3,20,.88);backdrop-filter:blur(16px);}
 .mcard{
   position:relative;z-index:1;
   background:linear-gradient(145deg,#2a0a4e 0%,#1a0835 60%,#0f0525 100%);
@@ -49,8 +49,9 @@ body{
   padding:clamp(10px,2.5vh,28px) clamp(14px,3.5vw,36px);
   text-align:center;width:min(480px,96%);
   animation:cardPop .3s cubic-bezier(.34,1.56,.64,1) both;
-  overflow-y:auto;
-  max-height:96vh;
+  overflow-y:visible;
+  max-height:none;
+  margin:auto;
   -webkit-overflow-scrolling:touch;
 }
 .mcard::before{content:'🌟';position:absolute;top:8px;left:10px;font-size:18px;opacity:.65;pointer-events:none;}
