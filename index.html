@@ -39,8 +39,8 @@ body{
 @keyframes twinkle{0%,100%{opacity:0;}50%{opacity:var(--op,.6);}}
 
 /* ── MODAL SHARED ── */
-.movl{position:fixed;inset:0;z-index:1000;display:flex;align-items:flex-start;justify-content:center;padding:1rem;overflow-y:auto;}
-.mbg{position:fixed;inset:0;background:rgba(8,3,20,.88);backdrop-filter:blur(16px);}
+.movl{position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;padding:1rem;}
+.mbg{position:absolute;inset:0;background:rgba(8,3,20,.88);backdrop-filter:blur(16px);}
 .mcard{
   position:relative;z-index:1;
   background:linear-gradient(145deg,#2a0a4e 0%,#1a0835 60%,#0f0525 100%);
@@ -49,9 +49,8 @@ body{
   padding:clamp(10px,2.5vh,28px) clamp(14px,3.5vw,36px);
   text-align:center;width:min(480px,96%);
   animation:cardPop .3s cubic-bezier(.34,1.56,.64,1) both;
-  overflow-y:visible;
-  max-height:none;
-  margin:auto;
+  overflow-y:auto;
+  max-height:94vh;
   -webkit-overflow-scrolling:touch;
 }
 .mcard::before{content:'🌟';position:absolute;top:8px;left:10px;font-size:18px;opacity:.65;pointer-events:none;}
@@ -93,13 +92,13 @@ body{
 .bsec:active{transform:translate(2px,2px);box-shadow:2px 2px 0 var(--dark);}
 
 /* Difficulty */
-.diff-row{display:flex;gap:5px;justify-content:center;margin-bottom:18px;flex-wrap:nowrap;}
+.diff-row{display:flex;gap:8px;justify-content:center;margin-bottom:18px;flex-wrap:wrap;}
 .dbtn{
-  font-family:'Baloo 2',sans-serif;font-weight:900;font-size:clamp(10px,1.8vw,13px);
-  padding:7px 10px;border-radius:20px;line-height:1.35;
+  font-family:'Baloo 2',sans-serif;font-weight:900;font-size:clamp(11px,2.5vw,13px);
+  padding:8px 14px;border-radius:20px;line-height:1.35;
   border:2px solid transparent;background:rgba(255,107,53,.06);
   color:rgba(255,184,160,.6);cursor:pointer;transition:all .18s;
-  touch-action:manipulation;flex:1;min-width:0;
+  touch-action:manipulation;
 }
 .dbtn.on{border-color:var(--orange);color:#fff8e0;background:rgba(255,107,53,.18);box-shadow:0 0 12px rgba(255,107,53,.4);}
 .dbtn:hover:not(.on){border-color:rgba(255,107,53,.4);color:#ffb8a0;}
@@ -128,7 +127,7 @@ body{
 .star-rating span:nth-child(3){animation-delay:.24s;}
 @keyframes starPop{from{transform:scale(0) rotate(-30deg);opacity:0;}to{transform:none;opacity:1;}}
 
-/* VanBerto bubble (modal) — seta aponta para a esquerda (robot está à esquerda) */
+/* VanBerto's bubble (modal) — seta aponta para a esquerda (robot está à esquerda) */
 .vb-bubble{
   background:linear-gradient(135deg,#dcebff,#fff);
   border:3px solid #0f172a;outline:2px solid #1e293b;outline-offset:-4px;
@@ -400,7 +399,7 @@ body{
   #pp-label{font-size:10px;}
   .pp-piece{font-size:10px;}
 
-  /* VanBerto bar compact */
+  /* VanBerto's bar compact */
   .vb-bar{padding:5px 8px;margin-bottom:5px;gap:7px;border-radius:8px;}
   #vbBotGame{width:36px;}
   #vbMsgGame{font-size:clamp(11px,3vw,13px);}
@@ -419,19 +418,16 @@ body{
 /* ── END MODAL — card mais compacto ── */
 #endMod .mcard{
   width:min(480px,96%);
-  padding:clamp(8px,1.8vh,18px) clamp(14px,3.5vw,32px);
 }
 #endMod #endStats{
   display:flex;gap:8px;margin:0;flex-shrink:0;align-items:center;
 }
-#endMod h2{font-size:clamp(17px,4.5vw,22px);margin-bottom:2px;padding-bottom:4px;}
-#endMod .star-rating{font-size:clamp(20px,5vw,28px);margin:2px 0 3px;}
+#endMod h2{font-size:clamp(17px,4.5vw,22px);}
+#endMod .star-rating{font-size:clamp(20px,5vw,28px);margin:2px 0 4px;}
 #endMod .mscore{font-size:clamp(20px,4.5vw,30px);}
-#endMod p#endTxt{font-size:12px;margin-top:4px;margin-bottom:4px;}
+#endMod p#endTxt{font-size:12px;margin-top:4px;}
 #endMod #tipCard{padding:6px 10px;margin:4px 0;}
 #endMod #tipCard .tip-text{font-size:clamp(10px,2.5vw,12px);}
-#endMod #endThumb{margin:6px 0 4px;}
-#endMod #endThumb img{max-height:min(28vh,200px);width:100%;object-fit:cover;}
 
 /* ── END MODAL MOBILE ── */
 @media(max-width:540px){
@@ -532,36 +528,7 @@ body{
   .endStat{width:90%;}
 }
 
-/* ── DESKTOP SMALL HEIGHT — modal compacto para portáteis ── */
-@media(min-width:769px) and (max-height:800px) and (orientation:landscape){
-  .mcard{
-    padding:clamp(8px,1.5vh,16px) clamp(12px,2vw,24px);
-    max-height:96vh;
-    border-radius:12px;
-  }
-  .mcard h2{font-size:clamp(17px,2.5vw,22px);margin-bottom:2px;padding-bottom:4px;}
-  .mcard p{font-size:12px;line-height:1.4;margin-bottom:6px;}
-  .mcard > div[style*="font-size"]{font-size:clamp(28px,5vh,40px)!important;margin-bottom:2px!important;}
-  .name-wrap{margin:6px 0 10px;}
-  .name-label{font-size:12px;}
-  #playerNameInput{font-size:13px;padding:6px 12px;}
-  .diff-row{gap:4px;margin-bottom:10px;flex-wrap:nowrap;}
-  .dbtn{font-size:10px;padding:5px 6px;}
-  .bplay{font-size:14px;padding:8px 24px;margin-top:6px;}
-  .credit{margin-top:6px;font-size:11px;}
-  /* End modal */
-  #endMod .mcard{padding:10px 16px 14px;}
-  #endMod h2{font-size:clamp(15px,2.2vw,20px);}
-  #endMod .star-rating{font-size:clamp(18px,3.5vh,26px);margin:2px 0 3px;}
-  #endMod .mscore{font-size:clamp(18px,3.5vh,26px);}
-  #endStats{gap:6px;margin:4px 0 3px;}
-  .endStat{padding:3px 10px;}
-  .endStat .es-val{font-size:13px;}
-  #tipCard{padding:5px 10px;margin:4px 0 3px;}
-  #tipCard .tip-text{font-size:11px;}
-  #endThumb{margin:6px 0 3px;}
-}
-
+/* END THUMB GLOW */
 @keyframes thumbGlow{
   from{box-shadow:0 0 0 3px var(--orange),0 0 0 5px var(--gold),6px 6px 0 var(--dark);}
   to{box-shadow:0 0 0 3px var(--orange),0 0 0 5px var(--gold),6px 6px 0 var(--dark),0 0 30px rgba(255,215,0,.35);}
@@ -779,7 +746,7 @@ body{
     <div id="pp-piece-right" class="pp-piece">🏆</div>
   </div>
 
-  <!-- VanBerto bar (oculta — usada só para manter o vbMsgGame e vbBotGame no DOM) -->
+  <!-- VanBerto's bar (oculta — usada só para manter o vbMsgGame e vbBotGame no DOM) -->
   <div class="vb-bar" style="width:100%;max-width:980px;display:none!important;">
     <svg id="vbBotGame" viewBox="0 0 80 90" xmlns="http://www.w3.org/2000/svg">
       <defs>
@@ -841,7 +808,7 @@ body{
 <!-- Nome da professora centrado no topo -->
 <div id="vb-float-prof-center">© Professora Vanda Várzea</div>
 
-<!-- Robot VanBerto FLUTUANTE — à direita, balão por cima -->
+<!-- Robot VanBerto's FLUTUANTE — à direita, balão por cima -->
 <div id="vb-float">
   <div id="vb-float-row">
     <div id="vbMsgFloat">Começa pelas bordas! 🧩</div>
@@ -911,7 +878,7 @@ document.getElementById('playerNameInput').addEventListener('input', e=>{
   if(name){
     bubble.innerHTML = 'Olá, <b>' + name.charAt(0).toUpperCase() + name.slice(1) + '</b>!<br>Vamos montar o puzzle do<br><b>Dia das Crianças! 🎉</b>';
   } else {
-    bubble.innerHTML = 'Olá! Sou o VanBerto!<br>Vamos montar o puzzle do<br><b>Dia das Crianças! 🎉</b>';
+    bubble.innerHTML = 'Olá! Sou o VanBerto\'s!<br>Vamos montar o puzzle do<br><b>Dia das Crianças! 🎉</b>';
   }
 });
 
